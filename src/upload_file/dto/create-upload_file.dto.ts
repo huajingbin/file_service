@@ -1,14 +1,13 @@
-class FileDto {
-  name: string
-  size: number
-  type:string
-  filename:string
-  path: string
-  originalname:string
+export class FileDto {
+  fieldname: string
+  originalname: string
+  encoding: string
+  mimetype: string
+  buffer: Buffer
+  size:number
 }
 
 export class CreateUploadFileDto {
-  fileName: string
-  path: string
-  file: FileDto
+  name: string
+  user_path:string
 }

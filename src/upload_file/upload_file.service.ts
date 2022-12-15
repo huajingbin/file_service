@@ -1,17 +1,33 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUploadFileDto } from './dto/create-upload_file.dto';
+import { CreateUploadFileDto,FileDto } from './dto/create-upload_file.dto';
 import { UpdateUploadFileDto } from './dto/update-upload_file.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { File } from 'src/types';
+import {join} from 'path';
+import { writeFileSync } from 'fs'
+import {v4 as uuid} from 'uuid'
+import { savePath,assetsAddress } from 'src/config';
 @Injectable()
 export class UploadFileService {
   constructor(
     @InjectModel('files') private readonly fileModel:Model<File>
   ){}
-  create(createUploadFileDto: CreateUploadFileDto) {
-    
-    return 'This action adds a new uploadFile';
+  async create(files: FileDto[], body: CreateUploadFileDto) {
+    for await (let file of files) {
+      const saveName = uuid() + '-' + file.originalname
+      writeFileSync(join(savePath, saveName), file.buffer)
+      const network_address = assetsAddress + saveName
+      this.fileModel.create({
+        name: saveName,
+        originalname: file.originalname,
+        network_address,
+        type: file.mimetype,
+        user_path: body.user_path,
+        size:file.size
+      })
+    }
+    return '成功'
   }
 
   findAll() {
