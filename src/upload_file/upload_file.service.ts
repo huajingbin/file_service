@@ -6,7 +6,8 @@ import { Model } from 'mongoose';
 import { File } from 'src/types';
 import {join} from 'path';
 import { writeFileSync } from 'fs'
-import {v4 as uuid} from 'uuid'
+import { v4 as uuid } from 'uuid'
+import {createHash} from 'crypto'
 import { savePath,assetsAddress } from 'src/config';
 @Injectable()
 export class UploadFileService {
@@ -18,13 +19,17 @@ export class UploadFileService {
       const saveName = uuid() + '-' + file.originalname
       writeFileSync(join(savePath, saveName), file.buffer)
       const network_address = assetsAddress + saveName
+      const fsHash = createHash('md5')
+      fsHash.update(file.buffer)
+      const md5 = fsHash.digest('hex')
       this.fileModel.create({
         name: saveName,
         originalname: file.originalname,
         network_address,
         type: file.mimetype,
         user_path: body.user_path,
-        size:file.size
+        size: file.size,
+        md5
       })
     }
     return '成功'

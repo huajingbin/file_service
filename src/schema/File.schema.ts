@@ -6,5 +6,6 @@ export default new mongoose.Schema({
   network_address: String,
   type: String,
   user_path: String,
-  size:Number
+  size: Number,
+  md5:String
 })

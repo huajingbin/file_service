@@ -7,5 +7,6 @@ export interface File extends Document {
   network_address: string,
   type: string,
   user_path: string,
-  size
+  size: number,
+  md5: String
 }

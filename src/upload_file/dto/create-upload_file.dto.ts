@@ -8,6 +8,5 @@ export class FileDto {
 }
 
 export class CreateUploadFileDto {
-  name: string
   user_path:string
 }
